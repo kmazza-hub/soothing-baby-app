@@ -1,0 +1,100 @@
+.gif-search {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.gif-search input {
+  padding: 8px;
+  font-size: 16px;
+  margin-right: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 60%;
+  max-width: 300px;
+}
+
+.gif-search button {
+  padding: 8px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 6px;
+  background-color: #60a5fa;
+  color: white;
+  border: none;
+}
+
+.gif-search button:hover {
+  background-color: #3b82f6;
+}
+
+.gif-results {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.gif-results img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 10px;
+  flex: 1 1 250px;
+}
+
+.gif-show-more {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.gif-show-more button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.gif-show-more button:hover {
+  background-color: #3b82f6;
+}
+
+/* Loading and error styles */
+.gif-search .loading,
+.gif-search .error {
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+.gif-search .loading {
+  color: #4a6fa5;
+}
+
+.gif-search .error {
+  color: red;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 600px) {
+  .gif-search input {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .gif-search button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .gif-results img {
+    flex: 1 1 100%;
+    max-width: 90%;
+  }
+
+  .gif-show-more button {
+    width: 100%;
+  }
+}

@@ -99,11 +99,7 @@ function App() {
       )}
 
       {visibleCards.favoriteVideos && (
-        <ToolCard
-          title="Favorite Videos"
-          description="Store and watch your child’s favorite YouTube videos"
-          onClose={() => handleHide("favoriteVideos")}
-        >
+        <ToolCard onClose={() => handleHide("favoriteVideos")}>
           <FavoriteVideos />
         </ToolCard>
       )}

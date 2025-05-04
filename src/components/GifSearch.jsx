@@ -1,43 +1,67 @@
+// src/components/GifSearch.jsx
 import React, { useState } from "react";
+import "./GifSearch.css";
 
 function GifSearch() {
-  const [query, setQuery] = useState("soothing baby");
-  const [gifs, setGifs] = useState([]);
+  const [query, setQuery] = useState("");
+  const [allGifs, setAllGifs] = useState([]);
+  const [displayCount, setDisplayCount] = useState(6);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const apiKey = import.meta.env.VITE_GIPHY_API_KEY;
-
-  const handleSearch = async () => {
+  const fetchGifs = async () => {
+    if (!query) return;
+    setLoading(true);
+    setError("");
     try {
+      const apiKey = import.meta.env.VITE_GIPHY_API_KEY;
       const res = await fetch(
-        `https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=${query}&limit=5&rating=g`
+        `https://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(
+          query
+        )}&api_key=${apiKey}&limit=30`
       );
+      if (!res.ok) {
+        throw new Error("Failed to fetch GIFs");
+      }
       const data = await res.json();
-      setGifs(data.data);
+      setAllGifs(data.data);
+      setDisplayCount(6); // reset display count
     } catch (err) {
-      console.error("GIF fetch failed:", err);
+      console.error("GIF fetch error:", err);
+      setError("Oops! Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleShowMore = () => {
+    setDisplayCount((prev) => prev + 6);
   };
 
   return (
     <div className="gif-search">
       <input
         type="text"
+        placeholder="Search soothing GIFs..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search calming GIFs..."
       />
-      <button onClick={handleSearch}>Search</button>
+      <button onClick={fetchGifs}>Search</button>
+
+      {loading && <p>Loading GIFs...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div className="gif-results">
-        {gifs.map((gif) => (
-          <img
-            key={gif.id}
-            src={gif.images.fixed_height.url}
-            alt={gif.title}
-            style={{ margin: "10px", borderRadius: "8px" }}
-          />
+        {allGifs.slice(0, displayCount).map((gif) => (
+          <img key={gif.id} src={gif.images.fixed_height.url} alt={gif.title} />
         ))}
       </div>
+
+      {displayCount < allGifs.length && (
+        <div className="gif-show-more">
+          <button onClick={handleShowMore}>Show More</button>
+        </div>
+      )}
     </div>
   );
 }
