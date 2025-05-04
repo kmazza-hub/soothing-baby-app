@@ -1,0 +1,20 @@
+.header {
+    text-align: center;
+    padding: 20px;
+    background-color: #f5f7fa;
+    border-bottom: 2px solid #d8dee9;
+  }
+  
+  .header__title {
+    font-size: 2rem;
+    color: #4a6fa5;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .header__subtitle {
+    font-size: 1rem;
+    color: #7a8ca4;
+    margin-top: 8px;
+  }
+  
