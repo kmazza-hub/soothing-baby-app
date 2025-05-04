@@ -1,0 +1,26 @@
+.favorites__form {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.favorites__form input {
+  padding: 10px;
+  width: 60%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.favorites__form button {
+  padding: 10px 16px;
+  background-color: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.favorites__video {
+  margin-bottom: 20px;
+}

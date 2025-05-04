@@ -1,3 +1,18 @@
+/* ========== GLOBAL RESET ========== */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f5f9ff;
+}
+
+/* ========== ROOT CONTAINER ========== */
+.app {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -5,19 +20,38 @@
   text-align: center;
 }
 
+/* ========== LOGO ANIMATION ========== */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+/* ========== GIPHY SEARCH ========== */
 .gif-search input {
   padding: 8px;
   font-size: 16px;
@@ -42,26 +76,162 @@
   justify-content: center;
 }
 
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.gif-results img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 10px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* ========== TIMER ========== */
+.timer {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.timer__display {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #4a6fa5;
+}
+
+.timer__buttons button,
+.timer__controls button {
+  margin: 6px 8px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  background-color: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.timer__buttons button:hover,
+.timer__controls button:hover {
+  background-color: #3b82f6;
+}
+
+/* ========== RESTART SECTIONS ========== */
+.restart-music,
+.restart-white-noise {
+  text-align: center;
+  margin: 20px auto;
+}
+
+.restart-music button,
+.restart-white-noise button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.restart-music button:hover,
+.restart-white-noise button:hover {
+  background-color: #3b82f6;
+}
+
+/* ========== TOOLCARD (RESPONSIVE) ========== */
+.tool-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.tool-card__title {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.tool-card__desc {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: #4b5563;
+}
+
+.tool-card__content {
+  margin-top: 12px;
+}
+
+.tool-card__close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* ========== RESTORE PANEL ========== */
+.restore-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.restore-panel button {
+  padding: 8px 14px;
+  font-size: 14px;
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.restore-panel button:hover {
+  background-color: #bae6fd;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  text-align: center;
+  font-size: 14px;
+  padding: 20px;
+  margin-top: 40px;
+  color: #555;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 600px) {
+  #root {
+    padding: 1rem;
   }
-}
 
-.card {
-  padding: 2em;
-}
+  .tool-card {
+    padding: 16px;
+  }
 
-.read-the-docs {
-  color: #888;
+  .tool-card__title {
+    font-size: 20px;
+  }
+
+  .tool-card__desc {
+    font-size: 14px;
+  }
+
+  .gif-search input,
+  .gif-search button,
+  .timer__buttons button,
+  .timer__controls button,
+  .restart-music button,
+  .restart-white-noise button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  iframe {
+    height: 280px !important;
+  }
 }

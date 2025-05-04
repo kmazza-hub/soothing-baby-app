@@ -1,53 +1,54 @@
 # Soothing Baby App 👶🎵
 
-A React-based web application to help parents and caregivers soothe babies using calming tools like music, GIFs, and timers.
+A responsive, React-based web app to help parents and caregivers soothe babies using calming tools like music, GIFs, and timers. Created as the final capstone for TripleTen’s Software Engineering program.
 
 ## 🌟 Features
-- Embedded lullaby playlist using Spotify API
-- Calming visuals powered by GIPHY API
-- Simple timer for soothing sessions (e.g., 5–10 minutes)
-- Mobile-first design for real-world use
+
+- 🎵 Embedded **Spotify lullaby playlist** (auto-hides when timer ends)
+- 📸 **Calming visuals** powered by the GIPHY API
+- 🕒 Soothing **timer** with pause/resume/reset functionality
+- 📱 **Mobile-first** UI with soft colors and large buttons for real-world usability
 
 ## 🛠️ Tech Stack
-- React
-- Vite
-- CSS Modules / BEM
-- Spotify API
+
+- React + Vite
+- Spotify Embed
 - GIPHY API
+- CSS (BEM naming)
+- Git + GitHub
 
 ## 📁 Project Structure
-- `components/` – Reusable UI blocks (ToolCard, Timer, etc.)
-- `api/` – API functions for Spotify and GIPHY
-- `assets/` – Images and media
-- `utils/` – Shared helpers
+
+- `components/` – Reusable UI blocks (`ToolCard`, `Timer`, `GifSearch`, etc.)
+- `assets/` – Media files like logo or static visuals
+- `.env` – Local API key for GIPHY (not committed)
+- `App.jsx` – Main component layout
 
 ## 🚀 Getting Started
 
-1. Clone the repo  
-   `git clone https://github.com/your-username/soothing-baby-app.git`
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/kmazza-hub/soothing-baby-app.git
+   cd soothing-baby-app
+Install dependencies
 
-2. Install dependencies  
-   `npm install`
+bash
+Copy
+Edit
+npm install
+Create a .env file
 
-3. Run locally  
-   `npm run dev`
+env
+Copy
+Edit
+VITE_GIPHY_API_KEY=your_api_key_here
+Run locally
 
-## ✅ Status
-Currently in development — part of my final software engineering capstone with TripleTen.
+bash
+Copy
+Edit
+npm run dev
+✅ Status
+Currently in active development as Stage 1 of my final full-stack portfolio project with TripleTen.
 
----
-
-Made with ❤️ for my daughter.
-
-
-# React + Vite
-
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Built with ❤️ for my daughter.
