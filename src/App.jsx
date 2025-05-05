@@ -1,4 +1,3 @@
-// App.jsx
 import React, { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -9,6 +8,7 @@ import WhiteNoise from "./components/WhiteNoise";
 import PersonalImage from "./components/PersonalImage";
 import FavoriteVideos from "./components/FavoriteVideos";
 import RestorePanel from "./components/RestorePanel";
+import LoginModal from "./components/LoginModal";
 import "./App.css";
 
 function App() {
@@ -20,6 +20,8 @@ function App() {
     favoriteVideos: true,
   });
 
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   useEffect(() => {
@@ -47,7 +49,19 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
+      <Header 
+        isLoggedIn={isLoggedIn} 
+        onLoginClick={() => setIsLoginOpen(true)} 
+      />
+
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onLogin={() => {
+          setIsLoggedIn(true);
+          setIsLoginOpen(false);
+        }}
+      />
 
       {visibleCards.personalImage && (
         <ToolCard
@@ -99,7 +113,11 @@ function App() {
       )}
 
       {visibleCards.favoriteVideos && (
-        <ToolCard onClose={() => handleHide("favoriteVideos")}>
+        <ToolCard
+          title="Favorite Videos"
+          description="Store and watch your child’s favorite YouTube videos"
+          onClose={() => handleHide("favoriteVideos")}
+        >
           <FavoriteVideos />
         </ToolCard>
       )}
@@ -112,7 +130,6 @@ function App() {
       </ToolCard>
 
       <RestorePanel visibleCards={visibleCards} onRestore={handleShow} />
-
       <Footer />
     </div>
   );

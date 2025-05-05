@@ -1,20 +1,70 @@
 .header {
-    text-align: center;
-    padding: 20px;
-    background-color: #f5f7fa;
-    border-bottom: 2px solid #d8dee9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f0f4f8;
+  border-bottom: 1px solid #ddd;
+  flex-wrap: wrap;
+}
+
+.header__text {
+  flex-grow: 1;
+}
+
+.header__title {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.header__subtitle {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.header__auth {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.header__login-btn {
+  background-color: #60a5fa;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.header__login-btn:hover {
+  background-color: #3b82f6;
+}
+
+.header__welcome {
+  color: #444;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Responsive tweak for narrow screens */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .header__title {
-    font-size: 2rem;
-    color: #4a6fa5;
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .header__auth {
+    width: 100%;
+    justify-content: flex-start;
   }
-  
-  .header__subtitle {
-    font-size: 1rem;
-    color: #7a8ca4;
-    margin-top: 8px;
+
+  .header__login-btn {
+    width: 100%;
+    margin-top: 10px;
   }
-  
+}
