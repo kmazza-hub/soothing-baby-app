@@ -85,3 +85,4 @@ GIPHY API
 
 TripleTen Software Engineering Bootcamp
 
+server: Netlify
