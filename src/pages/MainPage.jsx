@@ -1,3 +1,4 @@
+// src/pages/MainPage.jsx
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -24,9 +25,16 @@ function MainPage() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   useEffect(() => {
+    // Restore visible cards
     const stored = localStorage.getItem("visibleCards");
     if (stored) {
       setVisibleCards(JSON.parse(stored));
+    }
+
+    // Show login on first visit only
+    const hasLoggedInBefore = localStorage.getItem("hasLoggedIn");
+    if (!hasLoggedInBefore) {
+      setIsLoginOpen(true);
     }
   }, []);
 
@@ -48,7 +56,10 @@ function MainPage() {
 
   return (
     <>
-      <Header isLoggedIn={isLoggedIn} onLoginClick={() => setIsLoginOpen(true)} />
+      <Header
+        isLoggedIn={isLoggedIn}
+        onLoginClick={() => setIsLoginOpen(true)}
+      />
 
       <LoginModal
         isOpen={isLoginOpen}
@@ -56,6 +67,7 @@ function MainPage() {
         onLogin={() => {
           setIsLoggedIn(true);
           setIsLoginOpen(false);
+          localStorage.setItem("hasLoggedIn", "true");
         }}
       />
 
@@ -126,6 +138,7 @@ function MainPage() {
       </ToolCard>
 
       <RestorePanel visibleCards={visibleCards} onRestore={handleShow} />
+
       <Footer />
     </>
   );

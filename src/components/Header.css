@@ -15,7 +15,17 @@
 .header__title {
   margin: 0;
   font-size: 24px;
-  color: #333;
+}
+
+.header__home-link {
+  text-decoration: none;
+  color: #6c63ff;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.header__home-link:hover {
+  color: #4a42cc;
 }
 
 .header__subtitle {
@@ -24,10 +34,23 @@
   color: #666;
 }
 
-.header__auth {
+.header__nav {
   display: flex;
   align-items: center;
+  gap: 16px;
   margin-top: 10px;
+}
+
+.header__nav-link {
+  text-decoration: none;
+  color: #6c63ff;
+  font-weight: 500;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.header__nav-link:hover {
+  color: #4a42cc;
 }
 
 .header__login-btn {
@@ -58,9 +81,11 @@
     align-items: flex-start;
   }
 
-  .header__auth {
+  .header__nav {
     width: 100%;
-    justify-content: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 
   .header__login-btn {
