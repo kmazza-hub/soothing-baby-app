@@ -87,4 +87,8 @@ GIPHY API
 
 YouTube iFrame Player API
 
+⚠️ Known Console Warnings:
+This app embeds YouTube videos using <iframe>. You may see CORS errors in the console related to `googleads.g.doubleclick.net`. These originate from YouTube's internal ad scripts and do not affect functionality or user experience.
+
+
 TripleTen Software Engineering Bootcamp
