@@ -12,7 +12,7 @@ function ToolCard({ title, description, children, onClose }) {
   useEffect(() => {
     if (!visible) {
       const timeout = setTimeout(() => {
-        onClose(); // Trigger the unmount in App.jsx after fade out
+        onClose(); 
       }, 300);
       return () => clearTimeout(timeout);
     }
