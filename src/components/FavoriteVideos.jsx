@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+// src/components/FavoriteVideos.jsx
+import React, { useState, useEffect } from "react";
+import { fetchWithAuth } from "../utils/api";
 import "./FavoriteVideos.css";
 
-function FavoriteVideos() {
+function FavoriteVideos({ setIsLoggedIn }) {
   const [videoUrl, setVideoUrl] = useState("");
   const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+    fetchWithAuth("/videos")
+      .then(setVideos)
+      .catch(() => {
+        alert("Auth failed or fetch error");
+        handleLogout();
+      });
+  }, []);
 
   const extractVideoId = (url) => {
     const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^\s&?]+)/;
@@ -11,15 +22,38 @@ function FavoriteVideos() {
     return match ? match[1] : null;
   };
 
-  const handleAddVideo = (e) => {
+  const handleAddVideo = async (e) => {
     e.preventDefault();
-    const videoId = extractVideoId(videoUrl);
-    if (videoId) {
-      setVideos([...videos, videoId]);
+    const videoId = extractVideoId(videoUrl.trim());
+    if (!videoId) return alert("Invalid YouTube URL");
+
+    try {
+      const newVideo = await fetchWithAuth("/videos", {
+        method: "POST",
+        body: JSON.stringify({
+          title: `Video ${videos.length + 1}`,
+          videoUrl: `https://www.youtube.com/embed/${videoId}`,
+        }),
+      });
+      setVideos([newVideo, ...videos]);
       setVideoUrl("");
-    } else {
-      alert("Invalid YouTube URL");
+    } catch (err) {
+      alert("Failed to save video");
     }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await fetchWithAuth(`/videos/${id}`, { method: "DELETE" });
+      setVideos(videos.filter((v) => v._id !== id));
+    } catch {
+      alert("Delete failed");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
   };
 
   return (
@@ -34,23 +68,28 @@ function FavoriteVideos() {
           onChange={(e) => setVideoUrl(e.target.value)}
           placeholder="Enter YouTube URL"
         />
-        <button type="submit">Add Video</button>
+        <button type="submit" disabled={!videoUrl.trim()}>Add Video</button>
       </form>
 
       <div className="favorites__videos">
-        {videos.map((id, index) => (
-          <div key={index} className="favorites__video">
+        {videos.map((vid) => (
+          <div key={vid._id} className="favorites__video">
             <iframe
               width="100%"
               height="315"
-              src={`https://www.youtube.com/embed/${id}`}
-              title={`Favorite Video ${index + 1}`}
+              src={vid.videoUrl}
+              title={vid.title}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
+            <button onClick={() => handleDelete(vid._id)}>Remove</button>
           </div>
         ))}
+      </div>
+
+      <div className="favorites__logout">
+        <button onClick={handleLogout}>Logout</button>
       </div>
     </div>
   );

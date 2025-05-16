@@ -1,10 +1,10 @@
-// src/components/LoginModal.jsx
+// src/components/SignUpModal.jsx
 import React, { useState } from "react";
-import { loginUser } from "../utils/api";
+import { signupUser } from "../utils/api";
 import { toast } from "react-toastify";
 import "./LoginModal.css";
 
-function LoginModal({ isOpen, onClose, onLogin }) {
+function SignUpModal({ isOpen, onClose, onSignUp }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,14 +13,14 @@ function LoginModal({ isOpen, onClose, onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { user, token } = await loginUser({ email, password });
+      const { user, token } = await signupUser({ email, password });
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      toast.success("Signed in successfully!");
-      onLogin();
+      toast.success("Account created! You're now signed in.");
+      onSignUp();
       onClose();
     } catch (err) {
-      toast.error("Login failed. Please check your credentials.");
+      toast.error("Signup failed. Please try again.");
     }
   };
 
@@ -28,7 +28,7 @@ function LoginModal({ isOpen, onClose, onLogin }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="login-modal" onClick={(e) => e.stopPropagation()}>
         <button className="close-btn" onClick={onClose}>✖</button>
-        <h2>Sign In</h2>
+        <h2>Create Account</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -44,11 +44,11 @@ function LoginModal({ isOpen, onClose, onLogin }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit">Sign In</button>
+          <button type="submit">Sign Up</button>
         </form>
       </div>
     </div>
   );
 }
 
-export default LoginModal;
+export default SignUpModal;

@@ -39,6 +39,7 @@
   align-items: center;
   gap: 16px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .header__nav-link {
@@ -53,25 +54,53 @@
   color: #4a42cc;
 }
 
-.header__login-btn {
-  background-color: #60a5fa;
-  color: white;
+.header__login-btn,
+.header__signup-btn,
+.header__logout-btn {
   padding: 8px 14px;
   border: none;
   border-radius: 6px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s;
+}
+
+.header__login-btn {
+  background-color: #60a5fa;
+  color: white;
 }
 
 .header__login-btn:hover {
   background-color: #3b82f6;
 }
 
+.header__signup-btn {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.header__signup-btn:hover {
+  background-color: #c7d2fe;
+}
+
+.header__logout-btn {
+  background-color: #f87171;
+  color: white;
+}
+
+.header__logout-btn:hover {
+  background-color: #ef4444;
+}
+
 .header__welcome {
   color: #444;
   font-weight: 500;
   font-size: 14px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Responsive tweak for narrow screens */
@@ -88,8 +117,15 @@
     gap: 10px;
   }
 
-  .header__login-btn {
+  .header__login-btn,
+  .header__signup-btn,
+  .header__logout-btn {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 6px;
+  }
+
+  .header__welcome {
+    margin-top: 6px;
+    max-width: 100%;
   }
 }

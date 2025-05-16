@@ -1,6 +1,9 @@
 // src/App.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ToolCard from "./components/ToolCard";
@@ -11,10 +14,15 @@ import PersonalImage from "./components/PersonalImage";
 import FavoriteVideos from "./components/FavoriteVideos";
 import RestorePanel from "./components/RestorePanel";
 import LoginModal from "./components/LoginModal";
+import SignUpModal from "./components/SignUpModal";
 import AboutPage from "./pages/AboutPage";
+import { UserProvider, UserContext } from "./contexts/UserContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import "./App.css";
 
-function App() {
+function AppContent() {
+  const { isLoggedIn, currentUser, handleLogout } = useContext(UserContext);
   const [visibleCards, setVisibleCards] = useState({
     gifSearch: true,
     music: true,
@@ -22,9 +30,8 @@ function App() {
     personalImage: true,
     favoriteVideos: true,
   });
-
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   useEffect(() => {
@@ -34,8 +41,8 @@ function App() {
     }
   }, []);
 
-  const updateVisibility = (cardKey, isVisible) => {
-    const updated = { ...visibleCards, [cardKey]: isVisible };
+  const updateVisibility = (key, isVisible) => {
+    const updated = { ...visibleCards, [key]: isVisible };
     setVisibleCards(updated);
     localStorage.setItem("visibleCards", JSON.stringify(updated));
   };
@@ -52,16 +59,16 @@ function App() {
 
   return (
     <div className="app">
-      <Header isLoggedIn={isLoggedIn} onLoginClick={() => setIsLoginOpen(true)} />
-
-      <LoginModal
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
-        onLogin={() => {
-          setIsLoggedIn(true);
-          setIsLoginOpen(false);
-        }}
+      <Header
+        isLoggedIn={isLoggedIn}
+        currentUser={currentUser}
+        onLoginClick={() => setIsLoginOpen(true)}
+        onSignUpClick={() => setIsSignUpOpen(true)}
+        onLogout={handleLogout}
       />
+
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <SignUpModal isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
 
       <Routes>
         <Route
@@ -77,7 +84,6 @@ function App() {
                   <PersonalImage />
                 </ToolCard>
               )}
-
               {visibleCards.gifSearch && (
                 <ToolCard
                   title="Soothing GIF Search"
@@ -87,7 +93,6 @@ function App() {
                   <GifSearch />
                 </ToolCard>
               )}
-
               {visibleCards.music && (
                 <ToolCard
                   title="Soothing Sounds"
@@ -106,7 +111,6 @@ function App() {
                   ></iframe>
                 </ToolCard>
               )}
-
               {visibleCards.whiteNoise && (
                 <ToolCard
                   title="White Noise"
@@ -116,16 +120,21 @@ function App() {
                   <WhiteNoise timerActive={isTimerRunning} />
                 </ToolCard>
               )}
+             import ProtectedRoute from "./components/ProtectedRoute"; // 🔒 Add this
 
-              {visibleCards.favoriteVideos && (
-                <ToolCard
-                  title="Favorite Videos"
-                  description="Store and watch your child’s favorite YouTube videos"
-                  onClose={() => handleHide("favoriteVideos")}
-                >
-                  <FavoriteVideos />
-                </ToolCard>
-              )}
+...
+
+{visibleCards.favoriteVideos && (
+  <ProtectedRoute>
+    <ToolCard
+      title="Favorite Videos"
+      description="Store and watch your child’s favorite YouTube videos"
+      onClose={() => handleHide("favoriteVideos")}
+    >
+      <FavoriteVideos />
+    </ToolCard>
+  </ProtectedRoute>
+)}
 
               <ToolCard
                 title="Soothing Timer"
@@ -133,17 +142,24 @@ function App() {
               >
                 <Timer onStart={handleTimerStart} onFinish={handleTimerFinish} />
               </ToolCard>
-
               <RestorePanel visibleCards={visibleCards} onRestore={handleShow} />
             </>
           }
         />
-
         <Route path="/about" element={<AboutPage />} />
       </Routes>
 
       <Footer />
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
   );
 }
 
