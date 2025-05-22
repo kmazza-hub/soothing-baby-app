@@ -16,8 +16,8 @@ import RestorePanel from "./components/RestorePanel";
 import LoginModal from "./components/LoginModal";
 import SignUpModal from "./components/SignUpModal";
 import AboutPage from "./pages/AboutPage";
-import { UserProvider, UserContext } from "./contexts/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { UserProvider, UserContext } from "./contexts/UserContext";
 
 import "./App.css";
 
@@ -120,22 +120,17 @@ function AppContent() {
                   <WhiteNoise timerActive={isTimerRunning} />
                 </ToolCard>
               )}
-             import ProtectedRoute from "./components/ProtectedRoute"; // 🔒 Add this
-
-...
-
-{visibleCards.favoriteVideos && (
-  <ProtectedRoute>
-    <ToolCard
-      title="Favorite Videos"
-      description="Store and watch your child’s favorite YouTube videos"
-      onClose={() => handleHide("favoriteVideos")}
-    >
-      <FavoriteVideos />
-    </ToolCard>
-  </ProtectedRoute>
-)}
-
+              {visibleCards.favoriteVideos && (
+                <ProtectedRoute>
+                  <ToolCard
+                    title="Favorite Videos"
+                    description="Store and watch your child’s favorite YouTube videos"
+                    onClose={() => handleHide("favoriteVideos")}
+                  >
+                    <FavoriteVideos />
+                  </ToolCard>
+                </ProtectedRoute>
+              )}
               <ToolCard
                 title="Soothing Timer"
                 description="Use the timer for calming sessions, hair brushing, or quiet moments"
