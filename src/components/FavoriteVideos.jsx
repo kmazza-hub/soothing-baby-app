@@ -1,11 +1,12 @@
-// src/components/FavoriteVideos.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { fetchWithAuth } from "../utils/api";
+import { UserContext } from "../contexts/UserContext";
 import "./FavoriteVideos.css";
 
-function FavoriteVideos({ setIsLoggedIn }) {
+function FavoriteVideos() {
   const [videoUrl, setVideoUrl] = useState("");
   const [videos, setVideos] = useState([]);
+  const { handleLogout } = useContext(UserContext);
 
   useEffect(() => {
     fetchWithAuth("/videos")
@@ -14,7 +15,7 @@ function FavoriteVideos({ setIsLoggedIn }) {
         alert("Auth failed or fetch error");
         handleLogout();
       });
-  }, []);
+  }, [handleLogout]);
 
   const extractVideoId = (url) => {
     const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^\s&?]+)/;
@@ -49,11 +50,6 @@ function FavoriteVideos({ setIsLoggedIn }) {
     } catch {
       alert("Delete failed");
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
   };
 
   return (
