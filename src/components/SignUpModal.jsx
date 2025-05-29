@@ -14,18 +14,19 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
     e.preventDefault();
     try {
       const { user, token } = await signupUser({ email, password });
+
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
       toast.success("Account created! You're now signed in.");
 
-      if (typeof onSignUp === "function") {
-        onSignUp(); // ✅ Updates context
+      if (onSignUp && typeof onSignUp === "function") {
+        onSignUp(); // ✅ check before calling
       }
 
       onClose();
     } catch (err) {
-      console.error("❌ Signup error:", err.message || err);
+      console.error("❌ Signup error:", err);
       toast.error("Signup failed. Please try again.");
     }
   };
