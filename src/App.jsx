@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -22,7 +21,8 @@ import { UserProvider, UserContext } from "./contexts/UserContext";
 import "./App.css";
 
 function AppContent() {
-  const { isLoggedIn, currentUser, handleLogout } = useContext(UserContext);
+  const { isLoggedIn, currentUser, handleLogout, setCurrentUser, setIsLoggedIn } = useContext(UserContext);
+
   const [visibleCards, setVisibleCards] = useState({
     gifSearch: true,
     music: true,
@@ -30,6 +30,7 @@ function AppContent() {
     personalImage: true,
     favoriteVideos: true,
   });
+
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -57,6 +58,13 @@ function AppContent() {
     handleHide("whiteNoise");
   };
 
+  // ✅ Updates context when login/signup succeeds
+  const handleLogin = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    setCurrentUser(user);
+    setIsLoggedIn(true);
+  };
+
   return (
     <div className="app">
       <Header
@@ -67,8 +75,8 @@ function AppContent() {
         onLogout={handleLogout}
       />
 
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
-      <SignUpModal isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} />
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} onLogin={handleLogin} />
+      <SignUpModal isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} onSignUp={handleLogin} />
 
       <Routes>
         <Route
