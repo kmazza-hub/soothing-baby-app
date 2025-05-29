@@ -67,9 +67,15 @@ export const loginUser = async (formData) => {
     body: JSON.stringify(formData),
   });
 
-  if (!res.ok) throw new Error("Login failed");
-  return res.json(); // { user, token }
+  const text = await res.text(); // 👈 Read response text
+  if (!res.ok) {
+    console.error("Login failed:", text); // 👈 Log backend message
+    throw new Error("Login failed: " + text); // 👈 Include backend message in thrown error
+  }
+
+  return JSON.parse(text);
 };
+
 
 //
 // 🎥 VIDEOS
