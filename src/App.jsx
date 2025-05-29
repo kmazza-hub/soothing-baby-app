@@ -74,9 +74,8 @@ function AppContent() {
         onSignUpClick={() => setIsSignUpOpen(true)}
         onLogout={handleLogout}
       />
-
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} onLogin={handleLogin} />
-      <SignUpModal isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} onSignUp={handleLogin} />
+<LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} onLogin={handleLogin} />
+<SignUpModal isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} onSignUp={handleLogin} />
 
       <Routes>
         <Route

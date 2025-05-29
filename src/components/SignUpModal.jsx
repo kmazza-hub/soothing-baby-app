@@ -1,4 +1,3 @@
-// src/components/SignUpModal.jsx
 import React, { useState } from "react";
 import { signupUser } from "../utils/api";
 import { toast } from "react-toastify";
@@ -20,8 +19,8 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
 
       toast.success("Account created! You're now signed in.");
 
-      if (onSignUp && typeof onSignUp === "function") {
-        onSignUp(); // ✅ check before calling
+      if (typeof onSignUp === "function") {
+        onSignUp(); // Update context
       }
 
       onClose();

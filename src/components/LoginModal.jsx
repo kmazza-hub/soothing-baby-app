@@ -1,4 +1,3 @@
-// src/components/LoginModal.jsx
 import React, { useState } from "react";
 import { loginUser } from "../utils/api";
 import { toast } from "react-toastify";
@@ -20,8 +19,8 @@ function LoginModal({ isOpen, onClose, onLogin }) {
 
       toast.success("Signed in successfully!");
 
-      if (onLogin && typeof onLogin === "function") {
-        onLogin(); // ✅ safely call onLogin only if it's defined
+      if (typeof onLogin === "function") {
+        onLogin(); // Update context
       }
 
       onClose();
