@@ -7,20 +7,27 @@ import "./LoginModal.css";
 function LoginModal({ isOpen, onClose, onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const { user, token } = await loginUser({ email, password });
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       toast.success("Signed in successfully!");
-      onLogin();
+      onLogin?.(); // Optional chaining in case it's undefined
       onClose();
     } catch (err) {
-      toast.error("Login failed. Please check your credentials.");
+      const message = err.message.includes("401")
+        ? "Invalid email or password."
+        : "Login failed. Please try again.";
+      toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,7 +51,9 @@ function LoginModal({ isOpen, onClose, onLogin }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit">Sign In</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
         </form>
       </div>
     </div>
