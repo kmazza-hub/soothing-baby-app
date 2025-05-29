@@ -1,5 +1,9 @@
-const API_BASE = import.meta.env.VITE_API_URL;
+// src/utils/api.js
 
+// Base URL for API requests – fallback added for production safety
+const API_BASE = import.meta.env.VITE_API_URL || "https://your-backend.onrender.com/api"; // 🔁 Replace with your actual backend URL
+
+// Helper to retrieve token from localStorage
 const getToken = () => localStorage.getItem("token");
 
 // Generic authenticated fetch wrapper with debug logging
@@ -53,6 +57,7 @@ export const signupUser = async (formData) => {
   return res.json(); // { user, token }
 };
 
+// Log in existing user
 export const loginUser = async (formData) => {
   const res = await fetch(`${API_BASE}/auth/login`, {
     method: "POST",
