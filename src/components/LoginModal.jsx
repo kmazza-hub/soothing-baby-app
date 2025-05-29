@@ -12,6 +12,7 @@ function LoginModal({ isOpen, onClose, onLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const { user, token } = await loginUser({ email, password });
 
@@ -20,13 +21,13 @@ function LoginModal({ isOpen, onClose, onLogin }) {
 
       toast.success("Signed in successfully!");
 
-      if (onLogin && typeof onLogin === "function") {
-        onLogin(); // ✅ update context
+      if (typeof onLogin === "function") {
+        onLogin(); // ✅ Updates user context
       }
 
       onClose();
     } catch (err) {
-      console.error("❌ Login error:", err);
+      console.error("❌ Login error:", err.message || err);
       toast.error("Login failed. Please try again.");
     }
   };

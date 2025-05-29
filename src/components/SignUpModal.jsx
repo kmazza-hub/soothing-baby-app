@@ -7,28 +7,27 @@ import "./LoginModal.css";
 function SignUpModal({ isOpen, onClose, onSignUp }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
     try {
       const { user, token } = await signupUser({ email, password });
+
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
       toast.success("Account created! You're now signed in.");
-      if (onSignUp && typeof onSignUp === "function") {
-        onSignUp(); // Updates context in App
+
+      if (typeof onSignUp === "function") {
+        onSignUp(); // ✅ Only call if it's a real function
       }
-      onClose(); // Close modal
+
+      onClose();
     } catch (err) {
-      toast.error(err.message || "Signup failed. Please try again.");
-    } finally {
-      setLoading(false);
+      console.error("❌ Signup error:", err.message);
+      toast.error("Signup failed. Please try again.");
     }
   };
 
@@ -52,9 +51,7 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" disabled={loading}>
-            {loading ? "Signing up..." : "Sign Up"}
-          </button>
+          <button type="submit">Sign Up</button>
         </form>
       </div>
     </div>
