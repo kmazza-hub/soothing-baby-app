@@ -14,18 +14,19 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const { user, token } = await signupUser({ email, password });
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
+
       toast.success("Account created! You're now signed in.");
-      onSignUp?.();
-      onClose();
+      if (onSignUp && typeof onSignUp === "function") {
+        onSignUp(); // Updates context in App
+      }
+      onClose(); // Close modal
     } catch (err) {
-      const msg = err.message.includes("400")
-        ? "Email already in use. Try logging in."
-        : "Signup failed. Please try again.";
-      toast.error(msg);
+      toast.error(err.message || "Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,7 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
             required
           />
           <button type="submit" disabled={loading}>
-            {loading ? "Creating Account..." : "Sign Up"}
+            {loading ? "Signing up..." : "Sign Up"}
           </button>
         </form>
       </div>
