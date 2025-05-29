@@ -1,7 +1,9 @@
 // src/utils/api.js
 
-// Base URL for API requests – fallback added for production safety
-const API_BASE = import.meta.env.VITE_API_URL || "https://your-backend.onrender.com/api"; // 🔁 Replace with your actual backend URL
+const API_BASE = import.meta.env.PROD
+  ? "https://soothing-baby-backend.onrender.com/api"
+  : import.meta.env.VITE_API_URL;
+
 
 // Helper to retrieve token from localStorage
 const getToken = () => localStorage.getItem("token");
