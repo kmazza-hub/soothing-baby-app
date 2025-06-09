@@ -45,3 +45,6 @@ coverage/
 
 # Logs for debugging tools
 .nyc_output/
+
+# Local Netlify folder
+.netlify

@@ -1,9 +1,12 @@
 // src/utils/api.js
 
+// ✅ Dynamically choose the API base URL
 const API_BASE = import.meta.env.PROD
-  ? "https://soothing-baby-backend.onrender.com/api"
+  ? "http://34.73.245.216:3001/api" // Production backend on your VM
   : import.meta.env.VITE_API_URL;
 
+// ✅ Confirm which API is used at runtime
+console.log("🔍 Using API:", API_BASE);
 
 // Helper to retrieve token from localStorage
 const getToken = () => localStorage.getItem("token");
@@ -67,15 +70,14 @@ export const loginUser = async (formData) => {
     body: JSON.stringify(formData),
   });
 
-  const text = await res.text(); // 👈 Read response text
+  const text = await res.text();
   if (!res.ok) {
-    console.error("Login failed:", text); // 👈 Log backend message
-    throw new Error("Login failed: " + text); // 👈 Include backend message in thrown error
+    console.error("Login failed:", text);
+    throw new Error("Login failed: " + text);
   }
 
   return JSON.parse(text);
 };
-
 
 //
 // 🎥 VIDEOS
