@@ -3,7 +3,7 @@ import { signupUser } from "../utils/api";
 import { toast } from "react-toastify";
 import "./LoginModal.css";
 
-function SignUpModal({ isOpen, onClose, onSignUp }) {
+function SignUpModal({ isOpen, onClose, onSignUp = () => {} }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,23 +12,13 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await signupUser({ email, password });
-
-      if (!response || typeof response !== "object" || !response.token || !response.user) {
-        throw new Error("Invalid signup response");
-      }
-
-      const { user, token } = response;
+      const { user, token } = await signupUser({ email, password });
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
       toast.success("Account created! You're now signed in.");
-
-      // 🛡️ Only call if it's a valid function
-      if (typeof onSignUp === "function") {
-        onSignUp();
-      }
+      onSignUp(); // Always safe now
 
       onClose();
     } catch (err) {

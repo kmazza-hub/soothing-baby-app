@@ -3,7 +3,7 @@ import { loginUser } from "../utils/api";
 import { toast } from "react-toastify";
 import "./LoginModal.css";
 
-function LoginModal({ isOpen, onClose, onLogin }) {
+function LoginModal({ isOpen, onClose, onLogin = () => {} }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,10 +18,7 @@ function LoginModal({ isOpen, onClose, onLogin }) {
       localStorage.setItem("user", JSON.stringify(user));
 
       toast.success("Signed in successfully!");
-
-      if (typeof onLogin === "function") {
-        onLogin(); // Update context
-      }
+      onLogin(); // Always safe now
 
       onClose();
     } catch (err) {
