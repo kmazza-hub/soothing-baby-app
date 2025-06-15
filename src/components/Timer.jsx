@@ -65,9 +65,10 @@ function Timer({ onStart, onFinish }) {
       )}
 
       <div className="timer__buttons">
-        <button onClick={() => startTimer(60)}>1 min</button>
-        <button onClick={() => startTimer(180)}>3 min</button>
         <button onClick={() => startTimer(300)}>5 min</button>
+        <button onClick={() => startTimer(600)}>10 min</button>
+        <button onClick={() => startTimer(900)}>15 min</button>
+        <button onClick={() => startTimer(1200)}>20 min</button>
       </div>
 
       <div className="timer__controls">
