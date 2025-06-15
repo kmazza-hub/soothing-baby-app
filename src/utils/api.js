@@ -1,7 +1,7 @@
 // src/utils/api.js
 
-// ✅ Dynamically choose the API base URL
-const API_BASE = import.meta.env.VITE_API_URL;
+// ✅ Use unified HTTPS API base from environment
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 // ✅ Confirm which API is used at runtime
 console.log("🔍 Using API:", API_BASE);
@@ -56,7 +56,12 @@ export const signupUser = async (formData) => {
     body: JSON.stringify(formData),
   });
 
-  if (!res.ok) throw new Error("Signup failed");
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("Signup failed:", errorText);
+    throw new Error("Signup failed: " + errorText);
+  }
+
   return res.json(); // { user, token }
 };
 
