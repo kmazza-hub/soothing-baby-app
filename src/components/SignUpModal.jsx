@@ -14,12 +14,11 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
     try {
       const response = await signupUser({ email, password });
 
-      // Defensive parsing to avoid "r is not a function"
-      const { user, token } = response || {};
-
-      if (!user || !token) {
-        throw new Error("Invalid signup response");
+      if (!response || !response.token || !response.user) {
+        throw new Error("Signup response malformed");
       }
+
+      const { user, token } = response;
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
@@ -27,7 +26,7 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
       toast.success("Account created! You're now signed in.");
 
       if (typeof onSignUp === "function") {
-        onSignUp(); // Update app state
+        onSignUp(); // Update context
       }
 
       onClose();

@@ -12,14 +12,7 @@ function LoginModal({ isOpen, onClose, onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginUser({ email, password });
-
-      // Defensive parsing to avoid crashing on bad responses
-      const { user, token } = response || {};
-
-      if (!user || !token) {
-        throw new Error("Invalid login response");
-      }
+      const { user, token } = await loginUser({ email, password });
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
@@ -27,7 +20,7 @@ function LoginModal({ isOpen, onClose, onLogin }) {
       toast.success("Signed in successfully!");
 
       if (typeof onLogin === "function") {
-        onLogin(); // Update app state
+        onLogin(); // Update context
       }
 
       onClose();
