@@ -1,15 +1,13 @@
 // src/utils/api.js
 
-// ✅ Use unified HTTPS API base from environment
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
-// ✅ Confirm which API is used at runtime
+// ✅ Use HTTPS API base from environment (crabdance domain via Netlify)
+const API_BASE = import.meta.env.VITE_API_URL;
 console.log("🔍 Using API:", API_BASE);
 
-// Helper to retrieve token from localStorage
+// 🔐 Retrieve token from localStorage
 const getToken = () => localStorage.getItem("token");
 
-// Generic authenticated fetch wrapper with debug logging
+// ✅ Generic authenticated fetch wrapper
 export const fetchWithAuth = async (endpoint, options = {}) => {
   const token = getToken();
 
@@ -48,7 +46,6 @@ export const fetchWithAuth = async (endpoint, options = {}) => {
 // 🔐 AUTH
 //
 
-// Sign up a new user
 export const signupUser = async (formData) => {
   const res = await fetch(`${API_BASE}/auth/register`, {
     method: "POST",
@@ -65,7 +62,6 @@ export const signupUser = async (formData) => {
   return res.json(); // { user, token }
 };
 
-// Log in existing user
 export const loginUser = async (formData) => {
   const res = await fetch(`${API_BASE}/auth/login`, {
     method: "POST",
@@ -86,12 +82,10 @@ export const loginUser = async (formData) => {
 // 🎥 VIDEOS
 //
 
-// Get all videos for the logged-in user
 export const getVideos = () => {
   return fetchWithAuth("/videos");
 };
 
-// Add a new favorite video
 export const addVideo = (videoData) => {
   return fetchWithAuth("/videos", {
     method: "POST",
@@ -99,7 +93,6 @@ export const addVideo = (videoData) => {
   });
 };
 
-// Delete a video by ID
 export const deleteVideo = (videoId) => {
   return fetchWithAuth(`/videos/${videoId}`, {
     method: "DELETE",
