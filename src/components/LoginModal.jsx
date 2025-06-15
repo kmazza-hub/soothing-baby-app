@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { loginUser } from "../utils/api";
 import { toast } from "react-toastify";
+import { UserContext } from "../contexts/UserContext";
 import "./LoginModal.css";
 
-function LoginModal({ isOpen, onClose, onLogin = () => {} }) {
+function LoginModal({ isOpen, onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { handleLogin } = useContext(UserContext);
 
   if (!isOpen) return null;
 
@@ -16,10 +18,9 @@ function LoginModal({ isOpen, onClose, onLogin = () => {} }) {
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
+      handleLogin(user);
 
       toast.success("Signed in successfully!");
-      onLogin(); // Always safe now
-
       onClose();
     } catch (err) {
       console.error("❌ Login error:", err);

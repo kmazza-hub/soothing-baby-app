@@ -1,3 +1,4 @@
+// src/contexts/UserContext.jsx
 import React, { createContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
@@ -9,15 +10,15 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
+    const storedUser = localStorage.getItem("user");
+    if (token && storedUser) {
       try {
         const decoded = jwtDecode(token);
         if (Date.now() >= decoded.exp * 1000) {
-          handleLogout(); // expired
+          handleLogout(); // Token expired
         } else {
           setIsLoggedIn(true);
-          const user = JSON.parse(localStorage.getItem("user"));
-          setCurrentUser(user);
+          setCurrentUser(JSON.parse(storedUser));
         }
       } catch (err) {
         console.error("Invalid token:", err);
@@ -26,10 +27,9 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
-  const handleLogin = () => {
-    const user = localStorage.getItem("user");
+  const handleLogin = (user) => {
     setIsLoggedIn(true);
-    setCurrentUser(user ? JSON.parse(user) : null);
+    setCurrentUser(user);
   };
 
   const handleLogout = () => {
