@@ -12,7 +12,14 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { user, token } = await signupUser({ email, password });
+      const response = await signupUser({ email, password });
+
+      // Defensive parsing to avoid "r is not a function"
+      const { user, token } = response || {};
+
+      if (!user || !token) {
+        throw new Error("Invalid signup response");
+      }
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
@@ -20,7 +27,7 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
       toast.success("Account created! You're now signed in.");
 
       if (typeof onSignUp === "function") {
-        onSignUp(); // Update context
+        onSignUp(); // Update app state
       }
 
       onClose();
