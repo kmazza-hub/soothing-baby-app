@@ -1,4 +1,4 @@
-.header {
+.header { 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -56,7 +56,8 @@
 
 .header__login-btn,
 .header__signup-btn,
-.header__logout-btn {
+.header__logout-btn,
+.header__toggle-dark {
   padding: 8px 14px;
   border: none;
   border-radius: 6px;
@@ -93,6 +94,15 @@
   background-color: #ef4444;
 }
 
+.header__toggle-dark {
+  background-color: #d1d5db;
+  color: #111827;
+}
+
+.header__toggle-dark:hover {
+  background-color: #9ca3af;
+}
+
 .header__welcome {
   color: #444;
   font-weight: 500;
@@ -101,6 +111,31 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* 🌙 DARK MODE STYLES */
+body.dark-mode .header {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+body.dark-mode .header__home-link,
+body.dark-mode .header__nav-link,
+body.dark-mode .header__welcome {
+  color: #c7d2fe;
+}
+
+body.dark-mode .header__subtitle {
+  color: #9ca3af;
+}
+
+body.dark-mode .header__toggle-dark {
+  background-color: #4b5563;
+  color: #f3f4f6;
+}
+
+body.dark-mode .header__toggle-dark:hover {
+  background-color: #6b7280;
 }
 
 /* Responsive tweak for narrow screens */
@@ -119,7 +154,8 @@
 
   .header__login-btn,
   .header__signup-btn,
-  .header__logout-btn {
+  .header__logout-btn,
+  .header__toggle-dark {
     width: 100%;
     margin-top: 6px;
   }

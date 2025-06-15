@@ -235,3 +235,64 @@ html, body {
     height: 280px !important;
   }
 }
+
+/* Base dark mode styles */
+body.dark {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+}
+
+.dark-mode .tool-card {
+  background-color: #2c2c2c;
+  color: #f0f0f0;
+  border: 1px solid #444;
+}
+
+.dark-mode input,
+.dark-mode textarea {
+  background-color: #333;
+  color: #f0f0f0;
+  border: 1px solid #666;
+}
+
+.dark-mode button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+}
+
+.dark-mode .favorites__video button,
+.dark-mode .header__logout-btn {
+  background-color: #ef4444;
+}
+
+.dark-mode .favorites__video button:hover,
+.dark-mode .header__logout-btn:hover {
+  background-color: #dc2626;
+}
+
+/* Optional: soften the Spotify player */
+.dark-mode iframe[src*="spotify"] {
+  filter: brightness(0.9);
+}
+
+/* Timer dark styles */
+.dark-mode .timer__display,
+.dark-mode .timer__done-message {
+  color: #f0f0f0;
+}
+
+/* Restore panel in dark mode */
+.dark-mode .restore-panel {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+
+.dark-mode .restore-panel button {
+  background-color: #444;
+  color: white;
+}
+
+.dark-mode .restore-panel button:hover {
+  background-color: #666;
+}

@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -34,13 +35,25 @@ function AppContent() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("visibleCards");
     if (stored) {
       setVisibleCards(JSON.parse(stored));
     }
+
+    const storedTheme = localStorage.getItem("darkMode");
+    if (storedTheme === "true") {
+      setIsDarkMode(true);
+      document.body.classList.add("dark");
+    }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", isDarkMode);
+    document.body.classList.toggle("dark", isDarkMode);
+  }, [isDarkMode]);
 
   const updateVisibility = (key, isVisible) => {
     const updated = { ...visibleCards, [key]: isVisible };
@@ -58,7 +71,6 @@ function AppContent() {
     handleHide("whiteNoise");
   };
 
-  // ✅ Updates context when login/signup succeeds
   const handleLogin = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     setCurrentUser(user);
@@ -66,16 +78,18 @@ function AppContent() {
   };
 
   return (
-    <div className="app">
+    <div className={`app ${isDarkMode ? "dark-mode" : ""}`}>
       <Header
         isLoggedIn={isLoggedIn}
         currentUser={currentUser}
         onLoginClick={() => setIsLoginOpen(true)}
         onSignUpClick={() => setIsSignUpOpen(true)}
         onLogout={handleLogout}
+        onToggleDarkMode={() => setIsDarkMode((prev) => !prev)}
       />
-<LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} onLogin={handleLogin} />
-<SignUpModal isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} onSignUp={handleLogin} />
+
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} onLogin={handleLogin} />
+      <SignUpModal isOpen={isSignUpOpen} onClose={() => setIsSignUpOpen(false)} onSignUp={handleLogin} />
 
       <Routes>
         <Route
