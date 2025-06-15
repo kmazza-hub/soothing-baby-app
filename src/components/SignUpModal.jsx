@@ -14,8 +14,8 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
     try {
       const response = await signupUser({ email, password });
 
-      if (!response || !response.token || !response.user) {
-        throw new Error("Signup response malformed");
+      if (!response || typeof response !== "object" || !response.token || !response.user) {
+        throw new Error("Invalid signup response");
       }
 
       const { user, token } = response;
@@ -25,8 +25,9 @@ function SignUpModal({ isOpen, onClose, onSignUp }) {
 
       toast.success("Account created! You're now signed in.");
 
+      // 🛡️ Only call if it's a valid function
       if (typeof onSignUp === "function") {
-        onSignUp(); // Update context
+        onSignUp();
       }
 
       onClose();
