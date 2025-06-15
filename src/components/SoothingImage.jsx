@@ -1,19 +1,30 @@
-import React, { useState } from "react";
-import "./SoothingImage.css"; // Optional: move inline styles here
+import React, { useState, useEffect } from "react";
 
 function SoothingImage() {
-  const defaultImage =
-    "https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif";
   const [images, setImages] = useState([]);
+
+  // Load saved images from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("soothingImages");
+    if (saved) {
+      setImages(JSON.parse(saved));
+    }
+  }, []);
+
+  // Save to localStorage when images change
+  useEffect(() => {
+    localStorage.setItem("soothingImages", JSON.stringify(images));
+  }, [images]);
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    const urls = files.map((file) => URL.createObjectURL(file));
-    setImages((prev) => [...prev, ...urls]);
+    const newImageUrls = files.map((file) => URL.createObjectURL(file));
+    setImages((prev) => [...prev, ...newImageUrls]);
   };
 
-  const removeImage = (urlToRemove) => {
-    setImages((prev) => prev.filter((url) => url !== urlToRemove));
+  const handleRemoveImage = (indexToRemove) => {
+    const updated = images.filter((_, index) => index !== indexToRemove);
+    setImages(updated);
   };
 
   return (
@@ -26,65 +37,53 @@ function SoothingImage() {
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
-          gap: "12px",
-          marginBottom: "20px",
+          gap: "10px",
         }}
       >
-        {images.length === 0 ? (
-          <img
-            src={defaultImage}
-            alt="Default soothing"
-            style={{
-              width: "100%",
-              maxWidth: "400px",
-              borderRadius: "10px",
-            }}
-          />
-        ) : (
-          images.map((url, index) => (
-            <div
-              key={index}
-              style={{ position: "relative", display: "inline-block" }}
+        {images.map((url, index) => (
+          <div key={index} style={{ position: "relative", display: "inline-block" }}>
+            <img
+              src={url}
+              alt={`Soothing Baby ${index}`}
+              style={{ width: "100%", maxWidth: "200px", borderRadius: "10px" }}
+            />
+            <button
+              onClick={() => handleRemoveImage(index)}
+              style={{
+                position: "absolute",
+                top: "5px",
+                right: "5px",
+                backgroundColor: "rgba(255, 0, 0, 0.8)",
+                color: "white",
+                border: "none",
+                borderRadius: "50%",
+                width: "24px",
+                height: "24px",
+                cursor: "pointer",
+              }}
+              title="Remove"
             >
-              <img
-                src={url}
-                alt={`Uploaded ${index}`}
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  objectFit: "cover",
-                  borderRadius: "10px",
-                }}
-              />
-              <button
-                onClick={() => removeImage(url)}
-                style={{
-                  position: "absolute",
-                  top: 4,
-                  right: 4,
-                  background: "red",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "50%",
-                  width: "22px",
-                  height: "22px",
-                  cursor: "pointer",
-                }}
-              >
-                ✖
-              </button>
-            </div>
-          ))
-        )}
+              &times;
+            </button>
+          </div>
+        ))}
       </div>
 
+      <br />
       <input
         type="file"
+        accept="image/jpeg, image/png, image/gif, image/webp"
         multiple
-        accept="image/*"
         onChange={handleImageUpload}
         style={{ marginTop: "10px" }}
       />
+      <p style={{ fontSize: "0.9rem", color: "gray", marginTop: "5px" }}>
+        Having trouble? Convert iPhone `.HEIC` files to `.JPG` at{" "}
+        <a href="https://heic2jpg.com" target="_blank" rel="noreferrer">
+          heic2jpg.com
+        </a>{" "}
+        or change your camera settings to “Most Compatible.”
+      </p>
     </div>
   );
 }
