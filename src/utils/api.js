@@ -1,9 +1,7 @@
 // src/utils/api.js
 
 // ✅ Dynamically choose the API base URL
-const API_BASE = import.meta.env.PROD
-  ? "http://34.73.245.216:3001/api" // Production backend on your VM
-  : import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL;
 
 // ✅ Confirm which API is used at runtime
 console.log("🔍 Using API:", API_BASE);
