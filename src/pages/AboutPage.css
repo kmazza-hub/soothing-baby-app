@@ -1,20 +1,34 @@
 /* src/pages/AboutPage.css */
 
 .about-page {
-    padding: 40px 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
+  padding: 40px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  color: black !important;
+  background-color: white !important;
+}
+
+.about-page__title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.about-page__text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .about-page {
+    color: black !important;
+    background-color: white !important;
   }
-  
-  .about-page__title {
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .about-page__text {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
-  
+}
+
+/* Optional: Add dark mode override if you're using a class like `dark-mode` */
+.dark-mode .about-page {
+  color: black !important;
+  background-color: white !important;
+}
