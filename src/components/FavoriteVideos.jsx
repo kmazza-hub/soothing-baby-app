@@ -14,8 +14,23 @@ function FavoriteVideos() {
   useEffect(() => {
     fetchWithAuth("/videos")
       .then((data) => {
-        const sorted = JSON.parse(localStorage.getItem("videoOrder")) || data;
-        setVideos(sorted);
+        // Ensure tags are present
+        const cleanData = data.map((video) => ({
+          ...video,
+          tag: video.tag?.trim() || "Untagged",
+        }));
+
+        const storedOrder = JSON.parse(localStorage.getItem("videoOrder"));
+        if (storedOrder) {
+          // Merge updated tag info into stored order
+          const updatedOrder = storedOrder.map((v) => {
+            const fresh = cleanData.find((fv) => fv._id === v._id);
+            return fresh || v;
+          });
+          setVideos(updatedOrder);
+        } else {
+          setVideos(cleanData);
+        }
       })
       .catch(() => {
         alert("Auth failed or fetch error");
@@ -43,6 +58,7 @@ function FavoriteVideos() {
           tag: tag.trim() || "Untagged",
         }),
       });
+
       const updated = [newVideo, ...videos];
       setVideos(updated);
       setVideoUrl("");
@@ -64,7 +80,8 @@ function FavoriteVideos() {
     }
   };
 
-  const filteredVideos = filter === "All" ? videos : videos.filter((v) => v.tag === filter);
+  const filteredVideos =
+    filter === "All" ? videos : videos.filter((v) => v.tag === filter);
 
   const handleDragEnd = (result) => {
     if (!result.destination) return;
@@ -95,7 +112,9 @@ function FavoriteVideos() {
           onChange={(e) => setTag(e.target.value)}
           placeholder="Tag (e.g., Ms. Rachel)"
         />
-        <button type="submit" disabled={!videoUrl.trim()}>Add Video</button>
+        <button type="submit" disabled={!videoUrl.trim()}>
+          Add Video
+        </button>
       </form>
 
       <div className="favorites__filter">
@@ -110,7 +129,11 @@ function FavoriteVideos() {
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="videos">
           {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef} className="favorites__videos">
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="favorites__videos"
+            >
               {filteredVideos.map((vid, index) => (
                 <Draggable key={vid._id} draggableId={vid._id} index={index}>
                   {(provided) => (
@@ -129,8 +152,10 @@ function FavoriteVideos() {
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                       ></iframe>
-                      <p className="video-tag">Tag: {vid.tag || "Untagged"}</p>
-                      <button onClick={() => handleDelete(vid._id)}>Remove</button>
+                      <p className="video-tag">Tag: {vid.tag}</p>
+                      <button onClick={() => handleDelete(vid._id)}>
+                        Remove
+                      </button>
                     </div>
                   )}
                 </Draggable>
