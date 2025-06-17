@@ -1,85 +1,79 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { fetchWithAuth } from "../utils/api";
+import { UserContext } from "../contexts/UserContext";
+
+const DEFAULT_IMAGE = "/assets/baby.jpg";
 
 function SoothingImage() {
-  const [images, setImages] = useState([]);
+  const { isLoggedIn } = useContext(UserContext);
+  const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE);
+  const [loading, setLoading] = useState(false);
 
-  // Load saved base64 images from localStorage
+  // 🔁 Load from backend if logged in, otherwise show default
   useEffect(() => {
-    const saved = localStorage.getItem("soothingImages");
-    if (saved) {
-      setImages(JSON.parse(saved));
+    if (!isLoggedIn) {
+      setImageUrl(DEFAULT_IMAGE);
+      return;
     }
-  }, []);
 
-  // Save images to localStorage when they change
-  useEffect(() => {
-    localStorage.setItem("soothingImages", JSON.stringify(images));
-  }, [images]);
-
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-
-    Promise.all(
-      files.map((file) => {
-        return new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result); // base64 string
-          reader.readAsDataURL(file);
-        });
+    fetchWithAuth("/images")
+      .then((data) => {
+        if (data?.imageUrl) setImageUrl(data.imageUrl);
+        else setImageUrl(DEFAULT_IMAGE);
       })
-    ).then((base64Images) => {
-      setImages((prev) => [...prev, ...base64Images]);
-    });
-  };
+      .catch(() => setImageUrl(DEFAULT_IMAGE));
+  }, [isLoggedIn]);
 
-  const handleRemoveImage = (indexToRemove) => {
-    const updated = images.filter((_, index) => index !== indexToRemove);
-    setImages(updated);
+  // 📤 Upload handler
+  const handleUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("image", file);
+    setLoading(true);
+
+    try {
+      const res = await fetchWithAuth("/images", {
+        method: "POST",
+        body: formData,
+        headers: {}, // browser sets boundary for multipart/form-data
+      });
+
+      if (res.imageUrl) {
+        setImageUrl(res.imageUrl);
+      }
+    } catch (err) {
+      alert("Image upload failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div className="soothing-image" style={{ textAlign: "center" }}>
       <h2>Soothing Image</h2>
-      <p>Upload a photo of your baby to personalize the experience</p>
+      <p>{isLoggedIn ? "Upload your baby’s image to personalize" : "Default image shown until login"}</p>
 
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "10px" }}>
-        {images.map((url, index) => (
-          <div key={index} style={{ position: "relative", display: "inline-block" }}>
-            <img
-              src={url}
-              alt={`Soothing Baby ${index}`}
-              style={{ width: "100%", maxWidth: "200px", borderRadius: "10px" }}
-            />
-            <button
-              onClick={() => handleRemoveImage(index)}
-              style={{
-                position: "absolute",
-                top: "5px",
-                right: "5px",
-                backgroundColor: "rgba(255, 0, 0, 0.8)",
-                color: "white",
-                border: "none",
-                borderRadius: "50%",
-                width: "24px",
-                height: "24px",
-                cursor: "pointer",
-              }}
-              title="Remove"
-            >
-              &times;
-            </button>
-          </div>
-        ))}
-      </div>
-
-      <br />
-      <input
-        type="file"
-        accept="image/*"
-        multiple
-        onChange={handleImageUpload}
-        style={{ marginTop: "10px" }}
+      <img
+        src={imageUrl}
+        alt="Soothing"
+        style={{
+          width: "100%",
+          maxWidth: "300px",
+          borderRadius: "12px",
+          marginBottom: "10px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+        }}
       />
+
+      {isLoggedIn && (
+        <>
+          <br />
+          <input type="file" accept="image/*" onChange={handleUpload} disabled={loading} />
+          {loading && <p>Uploading...</p>}
+        </>
+      )}
     </div>
   );
 }
