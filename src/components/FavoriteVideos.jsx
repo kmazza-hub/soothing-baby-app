@@ -1,3 +1,4 @@
+// src/components/FavoriteVideos.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { fetchWithAuth } from "../utils/api";
 import { UserContext } from "../contexts/UserContext";
@@ -14,9 +15,9 @@ function FavoriteVideos() {
   useEffect(() => {
     fetchWithAuth("/videos")
       .then((data) => {
-        const order = JSON.parse(localStorage.getItem("videoOrder"));
-        const ordered = order
-          ? order.map((saved) => data.find((v) => v._id === saved._id)).filter(Boolean)
+        const savedOrder = JSON.parse(localStorage.getItem("videoOrder")) || [];
+        const ordered = savedOrder.length
+          ? savedOrder.map((v) => data.find((item) => item._id === v._id)).filter(Boolean)
           : data;
         setVideos(ordered);
       })
@@ -48,10 +49,10 @@ function FavoriteVideos() {
       });
       const updated = [newVideo, ...videos];
       setVideos(updated);
+      localStorage.setItem("videoOrder", JSON.stringify(updated));
       setVideoUrl("");
       setTag("");
-      localStorage.setItem("videoOrder", JSON.stringify(updated));
-    } catch (err) {
+    } catch {
       alert("Failed to save video");
     }
   };
@@ -67,9 +68,6 @@ function FavoriteVideos() {
     }
   };
 
-  const filteredVideos = filter === "All" ? videos : videos.filter((v) => v.tag === filter);
-  const uniqueTags = ["All", ...new Set(videos.map((v) => v.tag || "Untagged"))];
-
   const handleDragEnd = (result) => {
     if (!result.destination) return;
     const items = Array.from(videos);
@@ -78,6 +76,9 @@ function FavoriteVideos() {
     setVideos(items);
     localStorage.setItem("videoOrder", JSON.stringify(items));
   };
+
+  const filteredVideos = filter === "All" ? videos : videos.filter((v) => v.tag === filter);
+  const uniqueTags = ["All", ...new Set(videos.map((v) => v.tag || "Untagged"))];
 
   return (
     <div className="favorites">
