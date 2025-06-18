@@ -1,4 +1,3 @@
-// src/components/FavoriteVideos.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { fetchWithAuth } from "../utils/api";
@@ -72,6 +71,21 @@ function FavoriteVideos() {
       .catch((err) => console.error("❌ Failed to add video:", err));
   };
 
+  const handleDelete = (videoId) => {
+    if (!window.confirm("Are you sure you want to delete this video?")) return;
+
+    fetchWithAuth(`/videos/${videoId}`, {
+      method: "DELETE",
+    })
+      .then(() => {
+        setVideos((prev) => prev.filter((v) => v.id !== videoId));
+      })
+      .catch((err) => {
+        console.error("❌ Failed to delete video:", err);
+        alert("Failed to delete video");
+      });
+  };
+
   const handleFilterChange = (e) => setTagFilter(e.target.value);
 
   const filteredVideos = videos.filter((v) =>
@@ -137,9 +151,26 @@ function FavoriteVideos() {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
-            <p style={{ fontSize: "0.9em", marginTop: "4px" }}>
-              Tag: <strong>{video.tag}</strong>
-            </p>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
+              <p style={{ fontSize: "0.9em", margin: 0 }}>
+                Tag: <strong>{video.tag}</strong>
+              </p>
+              {isLoggedIn && (
+                <button
+                  onClick={() => handleDelete(video.id)}
+                  style={{
+                    background: "#ff4d4f",
+                    color: "#fff",
+                    border: "none",
+                    padding: "4px 8px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
           </div>
         ))}
       </div>
