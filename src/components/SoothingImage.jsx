@@ -2,25 +2,23 @@ import React, { useState, useEffect, useContext } from "react";
 import { fetchWithAuth } from "../utils/api";
 import { UserContext } from "../contexts/UserContext";
 
-const DEFAULT_IMAGE = "/baby.jpg"; // ✅ Correct public path for Vite
+const DEFAULT_IMAGE = "/baby.jpg";
 
 function SoothingImage() {
   const { isLoggedIn } = useContext(UserContext);
   const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE);
   const [loading, setLoading] = useState(false);
 
-  // 🔁 Load image from backend if logged in, otherwise show default
   useEffect(() => {
-    console.log("🔍 isLoggedIn:", isLoggedIn);
-
     if (!isLoggedIn) {
+      console.log("🔓 Not logged in. Using default image.");
       setImageUrl(DEFAULT_IMAGE);
       return;
     }
 
     fetchWithAuth("/images")
       .then((data) => {
-        console.log("📡 Fetched image from backend:", data?.imageUrl);
+        console.log("📡 Image from backend:", data?.imageUrl);
         if (data?.imageUrl && data.imageUrl.trim() !== "") {
           setImageUrl(data.imageUrl);
         } else {
@@ -33,7 +31,6 @@ function SoothingImage() {
       });
   }, [isLoggedIn]);
 
-  // 📤 Upload a new soothing image
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -46,7 +43,7 @@ function SoothingImage() {
       const res = await fetchWithAuth("/images", {
         method: "POST",
         body: formData,
-        headers: {}, // Allow multipart auto-handling
+        headers: {},
       });
 
       if (res.imageUrl && res.imageUrl.trim() !== "") {
@@ -92,7 +89,7 @@ function SoothingImage() {
               marginBottom: "4px",
             }}
           >
-            Upload New Image
+            Upload a new image
           </label>
           <input
             id="soothing-upload"
@@ -100,8 +97,8 @@ function SoothingImage() {
             accept="image/*"
             onChange={handleUpload}
             disabled={loading}
-            title="Upload soothing baby photo"
-            aria-label="Upload soothing baby photo"
+            title="Upload baby image"
+            aria-label="Upload baby image"
           />
           {loading && <p>Uploading...</p>}
         </>

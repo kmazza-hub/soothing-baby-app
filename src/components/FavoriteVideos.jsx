@@ -1,111 +1,142 @@
-// src/components/FavoriteVideos.jsx
 import React, { useState, useEffect, useContext } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { fetchWithAuth } from "../utils/api";
 import { UserContext } from "../contexts/UserContext";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./FavoriteVideos.css";
 
+const DEFAULT_VIDEOS = [
+  {
+    id: "default-msrachel",
+    title: "Ms. Rachel – Learning Songs",
+    url: "https://www.youtube.com/embed/M8wXe3DW7bg",
+    tag: "YouTube",
+  },
+];
+
 function FavoriteVideos() {
+  const { isLoggedIn } = useContext(UserContext);
+  const [videos, setVideos] = useState([]);
+  const [tagFilter, setTagFilter] = useState("All");
   const [videoUrl, setVideoUrl] = useState("");
   const [tag, setTag] = useState("");
-  const [videos, setVideos] = useState([]);
-  const [filter, setFilter] = useState("All");
-  const { handleLogout } = useContext(UserContext);
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      setVideos(DEFAULT_VIDEOS);
+      return;
+    }
+
     fetchWithAuth("/videos")
       .then((data) => {
-        const savedOrder = JSON.parse(localStorage.getItem("videoOrder")) || [];
-        const ordered = savedOrder.length
-          ? savedOrder.map((v) => data.find((item) => item._id === v._id)).filter(Boolean)
-          : data;
-        setVideos(ordered);
+        if (Array.isArray(data)) {
+          setVideos(data);
+        } else {
+          setVideos(DEFAULT_VIDEOS);
+        }
       })
-      .catch(() => {
-        alert("Auth failed or fetch error");
-        handleLogout();
+      .catch((err) => {
+        console.error("❌ Failed to fetch videos:", err);
+        setVideos(DEFAULT_VIDEOS);
       });
-  }, [handleLogout]);
+  }, [isLoggedIn]);
 
-  const extractVideoId = (url) => {
-    const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^\s&?]+)/;
-    const match = url.match(regex);
-    return match ? match[1] : null;
-  };
+  const handleAddVideo = () => {
+    if (!videoUrl.trim()) return;
 
-  const handleAddVideo = async (e) => {
-    e.preventDefault();
-    const videoId = extractVideoId(videoUrl.trim());
-    if (!videoId) return alert("Invalid YouTube URL");
+    const payload = {
+      title: "Custom Video",
+      videoUrl,
+      tag,
+    };
 
-    try {
-      const newVideo = await fetchWithAuth("/videos", {
-        method: "POST",
-        body: JSON.stringify({
-          title: `Video ${videos.length + 1}`,
-          videoUrl: `https://www.youtube.com/embed/${videoId}`,
-          tag: tag.trim() || "Untagged",
-        }),
+    fetchWithAuth("/videos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then((newVideo) => {
+        setVideos((prev) => [...prev, newVideo]);
+        setVideoUrl("");
+        setTag("");
+      })
+      .catch((err) => {
+        console.error("❌ Failed to add video:", err);
       });
-      const updated = [newVideo, ...videos];
-      setVideos(updated);
-      localStorage.setItem("videoOrder", JSON.stringify(updated));
-      setVideoUrl("");
-      setTag("");
-    } catch {
-      alert("Failed to save video");
-    }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await fetchWithAuth(`/videos/${id}`, { method: "DELETE" });
-      const updated = videos.filter((v) => v._id !== id);
-      setVideos(updated);
-      localStorage.setItem("videoOrder", JSON.stringify(updated));
-    } catch {
-      alert("Delete failed");
-    }
-  };
+  const handleFilterChange = (e) => setTagFilter(e.target.value);
+
+  const filteredVideos = videos.filter((video) =>
+    tagFilter === "All" ? true : video.tag === tagFilter
+  );
 
   const handleDragEnd = (result) => {
     if (!result.destination) return;
-    const items = Array.from(videos);
-    const [moved] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, moved);
-    setVideos(items);
-    localStorage.setItem("videoOrder", JSON.stringify(items));
+
+    const reordered = Array.from(videos);
+    const [moved] = reordered.splice(result.source.index, 1);
+    reordered.splice(result.destination.index, 0, moved);
+    setVideos(reordered);
+
+    fetchWithAuth("/videos/reorder", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reorderedVideos: reordered }),
+    })
+      .then(() => console.log("✅ Order saved"))
+      .catch((err) => console.error("❌ Failed to save order:", err));
   };
 
-  const filteredVideos = filter === "All" ? videos : videos.filter((v) => v.tag === filter);
-  const uniqueTags = ["All", ...new Set(videos.map((v) => v.tag || "Untagged"))];
+  const uniqueTags = Array.from(new Set(videos.map((v) => v.tag))).filter(Boolean);
 
   return (
-    <div className="favorites">
-      <h2 className="tool-card__title">Favorite YouTube Videos</h2>
-      <p className="tool-card__desc">Add calming videos your baby loves</p>
+    <div className="favorite-videos" style={{ textAlign: "center" }}>
+      <h2>Favorite Videos</h2>
+      <p>Save and organize calming YouTube videos your baby loves.</p>
 
-      <form onSubmit={handleAddVideo} className="favorites__form">
-        <input
-          type="text"
-          value={videoUrl}
-          onChange={(e) => setVideoUrl(e.target.value)}
-          placeholder="Enter YouTube URL"
-        />
-        <input
-          type="text"
-          value={tag}
-          onChange={(e) => setTag(e.target.value)}
-          placeholder="Tag (e.g., Ms. Rachel)"
-        />
-        <button type="submit" disabled={!videoUrl.trim()}>Add Video</button>
-      </form>
+      {isLoggedIn && (
+        <>
+          <h3 style={{ marginTop: "20px" }}>Add a New Video</h3>
+          <p>Paste the YouTube link and optionally add a tag (e.g., Ms. Rachel)</p>
 
-      <div className="favorites__filter">
-        <label>Filter by Tag: </label>
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-          {uniqueTags.map((tagOption) => (
-            <option key={tagOption} value={tagOption}>{tagOption}</option>
+          <input
+            type="text"
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            placeholder="Enter YouTube URL"
+            style={{ width: "80%", padding: "8px", marginBottom: "10px" }}
+          />
+          <br />
+          <input
+            type="text"
+            value={tag}
+            onChange={(e) => setTag(e.target.value)}
+            placeholder="Tag (e.g., Ms. Rachel)"
+            style={{ width: "80%", padding: "8px", marginBottom: "10px" }}
+          />
+          <br />
+          <button onClick={handleAddVideo} style={{ padding: "10px 20px" }}>
+            Add Video
+          </button>
+        </>
+      )}
+
+      <div style={{ marginTop: "20px" }}>
+        <label htmlFor="tagFilter" style={{ fontWeight: "bold" }}>
+          Filter by Tag:
+        </label>
+        <select
+          id="tagFilter"
+          value={tagFilter}
+          onChange={handleFilterChange}
+          title="Filter videos by tag"
+          aria-label="Filter videos by tag"
+        >
+          <option value="All">All</option>
+          {uniqueTags.map((tag) => (
+            <option key={tag} value={tag}>
+              {tag}
+            </option>
           ))}
         </select>
       </div>
@@ -113,27 +144,42 @@ function FavoriteVideos() {
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="videos">
           {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef} className="favorites__videos">
-              {filteredVideos.map((vid, index) => (
-                <Draggable key={vid._id} draggableId={vid._id} index={index}>
+            <div
+              className="video-list"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              style={{ marginTop: "20px" }}
+            >
+              {filteredVideos.map((video, index) => (
+                <Draggable key={video.id} draggableId={video.id} index={index}>
                   {(provided) => (
                     <div
-                      className="favorites__video"
+                      className="video-card"
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
+                      style={{
+                        ...provided.draggableProps.style,
+                        background: "#fff",
+                        borderRadius: "8px",
+                        padding: "10px",
+                        marginBottom: "15px",
+                        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                      }}
                     >
+                      <h4>{video.title}</h4>
                       <iframe
                         width="100%"
-                        height="315"
-                        src={vid.videoUrl}
-                        title={vid.title}
+                        height="215"
+                        src={video.url}
+                        title={video.title}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                       ></iframe>
-                      <p className="video-tag">Tag: {vid.tag || "Untagged"}</p>
-                      <button onClick={() => handleDelete(vid._id)}>Remove</button>
+                      <p style={{ fontSize: "0.9em", marginTop: "4px" }}>
+                        Tag: <strong>{video.tag}</strong>
+                      </p>
                     </div>
                   )}
                 </Draggable>
@@ -143,10 +189,6 @@ function FavoriteVideos() {
           )}
         </Droppable>
       </DragDropContext>
-
-      <div className="favorites__logout">
-        <button onClick={handleLogout}>Logout</button>
-      </div>
     </div>
   );
 }
