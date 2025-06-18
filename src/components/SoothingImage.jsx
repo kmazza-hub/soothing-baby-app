@@ -10,19 +10,27 @@ function SoothingImage() {
   const [loading, setLoading] = useState(false);
 
   // 🔁 Load image from backend if logged in, otherwise show default
-  useEffect(() => {
-    if (!isLoggedIn) {
-      setImageUrl(DEFAULT_IMAGE);
-      return;
-    }
+useEffect(() => {
+  console.log("🔍 isLoggedIn:", isLoggedIn);
+  console.log("🖼️ Setting image to default:", DEFAULT_IMAGE);
 
-    fetchWithAuth("/images")
-      .then((data) => {
-        if (data?.imageUrl) setImageUrl(data.imageUrl);
-        else setImageUrl(DEFAULT_IMAGE);
-      })
-      .catch(() => setImageUrl(DEFAULT_IMAGE));
-  }, [isLoggedIn]);
+  if (!isLoggedIn) {
+    setImageUrl(DEFAULT_IMAGE);
+    return;
+  }
+
+  fetchWithAuth("/images")
+    .then((data) => {
+      console.log("📡 Fetched image from backend:", data?.imageUrl);
+      if (data?.imageUrl) setImageUrl(data.imageUrl);
+      else setImageUrl(DEFAULT_IMAGE);
+    })
+    .catch((err) => {
+      console.error("❌ Failed to fetch image:", err);
+      setImageUrl(DEFAULT_IMAGE);
+    });
+}, [isLoggedIn]);
+
 
   // 📤 Upload a new soothing image
   const handleUpload = async (e) => {
