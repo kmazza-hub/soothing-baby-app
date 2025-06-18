@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { fetchWithAuth } from "../utils/api";
 import { UserContext } from "../contexts/UserContext";
 
-const DEFAULT_IMAGE = "/baby.jpg";
+const DEFAULT_IMAGE = "/baby.jpg"; // Correct public path for Vite
 
 function SoothingImage() {
   const { isLoggedIn } = useContext(UserContext);
@@ -11,14 +11,12 @@ function SoothingImage() {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      console.log("🔓 Not logged in. Using default image.");
       setImageUrl(DEFAULT_IMAGE);
       return;
     }
 
     fetchWithAuth("/images")
       .then((data) => {
-        console.log("📡 Image from backend:", data?.imageUrl);
         if (data?.imageUrl && data.imageUrl.trim() !== "") {
           setImageUrl(data.imageUrl);
         } else {
@@ -89,7 +87,7 @@ function SoothingImage() {
               marginBottom: "4px",
             }}
           >
-            Upload a new image
+            Upload New Image
           </label>
           <input
             id="soothing-upload"
@@ -97,8 +95,8 @@ function SoothingImage() {
             accept="image/*"
             onChange={handleUpload}
             disabled={loading}
-            title="Upload baby image"
-            aria-label="Upload baby image"
+            title="Upload soothing baby photo"
+            aria-label="Upload soothing baby photo"
           />
           {loading && <p>Uploading...</p>}
         </>
