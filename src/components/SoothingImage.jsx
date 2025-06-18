@@ -2,14 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { fetchWithAuth } from "../utils/api";
 import { UserContext } from "../contexts/UserContext";
 
-const DEFAULT_IMAGE = "/assets/baby.jpg";
+const DEFAULT_IMAGE = "/baby.jpg"; // ✅ Correct public path (no /assets)
 
 function SoothingImage() {
   const { isLoggedIn } = useContext(UserContext);
   const [imageUrl, setImageUrl] = useState(DEFAULT_IMAGE);
   const [loading, setLoading] = useState(false);
 
-  // 🔁 Load from backend if logged in, otherwise show default
+  // 🔁 Load image from backend if logged in, otherwise show default
   useEffect(() => {
     if (!isLoggedIn) {
       setImageUrl(DEFAULT_IMAGE);
@@ -24,7 +24,7 @@ function SoothingImage() {
       .catch(() => setImageUrl(DEFAULT_IMAGE));
   }, [isLoggedIn]);
 
-  // 📤 Upload handler
+  // 📤 Upload a new soothing image
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -37,14 +37,12 @@ function SoothingImage() {
       const res = await fetchWithAuth("/images", {
         method: "POST",
         body: formData,
-        headers: {}, // browser sets boundary for multipart/form-data
+        headers: {}, // Allow multipart auto-handling
       });
 
-      if (res.imageUrl) {
-        setImageUrl(res.imageUrl);
-      }
-    } catch (err) {
-      alert("Image upload failed");
+      if (res.imageUrl) setImageUrl(res.imageUrl);
+    } catch {
+      alert("Failed to upload image");
     } finally {
       setLoading(false);
     }
@@ -57,20 +55,24 @@ function SoothingImage() {
 
       <img
         src={imageUrl}
-        alt="Soothing"
-        style={{
-          width: "100%",
-          maxWidth: "300px",
-          borderRadius: "12px",
-          marginBottom: "10px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-        }}
+        alt="Soothing baby"
+        style={{ width: "100%", maxWidth: "300px", borderRadius: "12px", marginBottom: "10px" }}
       />
 
       {isLoggedIn && (
         <>
           <br />
-          <input type="file" accept="image/*" onChange={handleUpload} disabled={loading} />
+          <label htmlFor="soothing-upload" style={{ display: "block", fontWeight: "bold", marginBottom: "4px" }}>
+            Upload New Image
+          </label>
+          <input
+            id="soothing-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleUpload}
+            disabled={loading}
+            title="Upload soothing baby photo"
+          />
           {loading && <p>Uploading...</p>}
         </>
       )}
