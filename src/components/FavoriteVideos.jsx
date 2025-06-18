@@ -8,7 +8,7 @@ const DEFAULT_VIDEOS = [
   {
     id: "default-msrachel",
     title: "Ms. Rachel – Learning Songs",
-    url: "https://www.youtube.com/embed/M8wXe3DW7bg",
+    videoUrl: "https://www.youtube.com/embed/M8wXe3DW7bg",
     tag: "YouTube",
   },
 ];
@@ -43,10 +43,12 @@ function FavoriteVideos() {
   const handleAddVideo = () => {
     if (!videoUrl.trim()) return;
 
+    const embeddedUrl = videoUrl.replace("watch?v=", "embed/");
+
     const payload = {
-      title: "Custom Video",
-      videoUrl,
-      tag,
+      title: `Video ${videos.length + 1}`,
+      videoUrl: embeddedUrl,
+      tag: tag.trim() || "Untagged",
     };
 
     fetchWithAuth("/videos", {
@@ -104,6 +106,7 @@ function FavoriteVideos() {
             value={videoUrl}
             onChange={(e) => setVideoUrl(e.target.value)}
             placeholder="Enter YouTube URL"
+            aria-label="YouTube video URL"
             style={{ width: "80%", padding: "8px", marginBottom: "10px" }}
           />
           <br />
@@ -112,6 +115,7 @@ function FavoriteVideos() {
             value={tag}
             onChange={(e) => setTag(e.target.value)}
             placeholder="Tag (e.g., Ms. Rachel)"
+            aria-label="Tag for video"
             style={{ width: "80%", padding: "8px", marginBottom: "10px" }}
           />
           <br />
@@ -171,7 +175,7 @@ function FavoriteVideos() {
                       <iframe
                         width="100%"
                         height="215"
-                        src={video.url}
+                        src={video.videoUrl}
                         title={video.title}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
